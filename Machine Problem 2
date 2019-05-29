@@ -1,0 +1,101 @@
+//Create a program that would compute the following values based on the given sides of the triangle. Let the measurements of the sides be a user-input. 
+//A. Compute for all interior angles. 
+//B. Classify whether scalene, isosceles, or equilateral. 
+//C. Determine the area and perimeter. 
+//D. Classify whether acute triangle, right triangle, or obtuse triangle. 
+//E. Compute for length of apothem and circumcenter. 
+
+#include<iostream>
+#include<math.h>
+using namespace std;
+
+int main()
+{
+	double a, b, c, aa, ab, ac, a2, b2, x, ta, s, A, C;
+	x = 2;
+	s = (a+b+c) / (2);
+	double pi;
+	pi=3.141519265358979323846;
+	double area, perimeter;
+	double apothem, circumcenter;
+	char type;
+	
+// input side values 
+	cout << "Input the values of sides A, B & C:" << endl;
+	cout << "Side A = ";
+	cin >> a;
+	cout << "Side B = ";
+	cin >> b;
+	cout << "Side C = ";
+	cin >> c;
+	cout <<""<< endl;
+	
+// computation for interior angles
+// Angle A pow(x,y)
+a2 = ((pow(b, x)+pow(c, x)) - pow(a, x)) / (2*b*c);
+aa = acos(a2) * ((180) / (pi));
+// Angle b
+b2 = ((pow(a, x)+pow(c, x)) - pow(b, x)) / (2*a*c);
+ab = acos(b2) * ((180) / (pi));
+
+// Angle c
+ac = 180 - aa - ab;
+
+ta = aa+ab+ac;
+
+// ouput of angles a,b,c
+cout << "Angle A is: "<<aa<< endl;
+cout << "Angle B is: "<<ab<< endl;
+cout << "Angle C is: "<<ac<< endl;
+	cout <<""<< endl;
+	
+//equilateral
+if (a == b == c)
+cout << "The triangle is an equilateral" << endl; //equilateral
+//isosceles
+else if (a==b or a==c or b==c)
+cout << "The triangle is an isosceles" << endl; //isosceles
+//scalene
+else
+cout << "The triangle is a scalene" << endl; //scalene
+	cout <<""<< endl;
+
+//getting the area
+ //p = a+b+c / 2
+    //p is the half of the perimeter
+    double p = (a + b + c) / 2;
+    
+    //https://www.mathopenref.com/heronsformula.html
+    area = sqrt (p * (p - a) * (p - b) * (p - c));
+    perimeter = p*2;
+    cout << "Perimeter is: " <<perimeter<<endl;
+    cout << "Area is: " <<area<<endl<<endl;
+ 
+
+// triangle classifications
+cout << "It is classified as a(n):" << endl;
+
+    if (aa>90 or ab>90 or ac>90)
+    cout << "Obtuse Triangle" << endl;
+    
+    else if (aa<90 && ab<90 && ac<90)
+    cout << "Acute Triangle" << endl;
+    
+    else if (aa==90 or ab==90 or ac==90)
+	cout << "Right Triangle" << endl;
+
+else
+cout<< "not a valid triangle" << endl;
+cout << "" << endl;
+
+// getting the apothem and circumcenter
+// apothem = 2 * area / perimeter
+	apothem = 2 * area / perimeter;
+	
+	// circumcenter formula
+	circumcenter = (a * b * c) / sqrt((a + b + c) * (b + c - a) * (a + b - c));
+	
+	cout << "Apothem of the triangle = " << apothem << endl;
+	cout << "Circumcenter of the triangle = " << circumcenter << endl;
+}
+
