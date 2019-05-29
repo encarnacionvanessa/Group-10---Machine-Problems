@@ -1,0 +1,291 @@
+//Nowadays, software companies are producing classroom management software in order to aid school instructors or professors in assessing their students’ academic performances in class. As a newly built software company, you’ve decided to create your own version of a classroom management software in a form of an electronic class record that will suit the given specifications:
+//A. The program will let the instructor to input 50 student names and their respective scores for each grade component
+//B. The students’ raw grades will be computed according to the following grade components:
+//C. The program will output the students’ final raw grades and their corresponding Grade Point Average (GPA) based on the transmutation table found below:
+//D. The program will determine if a student passed or failed the subject and will display the top 10 performing students in class.
+
+#include <algorithm>
+#include <iostream>
+#include <sstream>
+#include <string>
+
+using namespace std;
+
+struct Exams // The function use to refer if written and practical exam
+{
+  int writtenExam;
+  int practicalExam;
+};
+
+struct FinalGrade // The function use to input final grade and GPA
+{
+  float finalPercentageGrade;
+  float finalGPA;
+};
+
+struct Grades // The function use is to input the grade component
+{
+ int experiment1; // Each experiment is equal to 100 points
+  int experiment2; //  has a weight of 5%
+  int experiment3; // Equivalent to 20%
+  int experiment4;
+  int skillsTest1; // Each skills test is equal to 100 points
+  int skillsTest2; //  has a weight of 5%
+  int skillsTest3; // Equivalent to 20%
+  int skillsTest4;
+  int machineProblem1; // Each machineproblem is equal to 100 points
+  int machineProblem2; //  has a weight of 5% and equivalent to 20%
+  Exams preliminary; // major examination is 20%
+  Exams final;
+};
+
+struct Students // the function use is to input the student's name and grades
+{
+  string name;
+  Grades rawGrades;
+  FinalGrade finalGrade;
+  string status;
+};
+
+void enterAndComputeExperimentsPercentage(Students *studentList, int i);
+void enterAndComputeSkillTestsPercentage(Students *studentList, int i);
+void enterAndComputeMachineProblemsPercentage(Students *studentList, int i);
+void enterAndComputeMajorExaminationsPercentage(Students *studentList, int i);
+void determineGPA(Students *studentList, int i);
+bool compareFinalRawGrades(Students s1, Students s2); 
+
+int main() 
+{
+  Students studentList[50]; // it will input 50 student's name
+
+  for (int i = 0; i < 50; i++) {
+    float componentPercentage;
+    cout << "\nEnter Student Name\n"; // inputting the student's name 
+    cin >> studentList[i].name;
+    cout << "\nEnter grades of " << studentList[i].name << "\n\n"; // inputting the grades
+
+
+    enterAndComputeExperimentsPercentage(studentList, i);
+    enterAndComputeSkillTestsPercentage(studentList, i);
+    enterAndComputeMachineProblemsPercentage(studentList, i);
+    enterAndComputeMajorExaminationsPercentage(studentList, i);
+
+    determineGPA(studentList, i);
+  }
+  
+//Declaration of Top 10 Students in the class
+  cout << "Top 10 Students of the Class \n";
+  sort(studentList, studentList + 50, compareFinalRawGrades);
+  
+  for (int i = 0; i < 50; i++) // the loop use is to determine the final grade and GPA
+  {
+
+    if (i < 10) 
+	{
+      cout << "Top " << i + 1 << ": " << studentList[i].name << " - "
+           << studentList[i].finalGrade.finalPercentageGrade << " ("
+           << studentList[i].finalGrade.finalGPA << ") "
+           << studentList[i].status << "\n";
+    } 
+	
+	else 
+	{
+      cout << studentList[i].name << " - "
+           << studentList[i].finalGrade.finalPercentageGrade << " ("
+           << studentList[i].finalGrade.finalGPA << ")\n";
+    }
+  }
+
+  return 0;
+}
+
+void enterAndComputeExperimentsPercentage(Students *studentList, int i) {
+  float componentPercentage;
+
+//Input of scores in Experiments
+cout << "EXPERIMENTS\n";  
+cout << "Experiment 1:\n";
+  cin >> studentList[i].rawGrades.experiment1;
+  cout << "Experiment 2:\n";
+  cin >> studentList[i].rawGrades.experiment2;
+  cout << "Experiment 3:\n";
+  cin >> studentList[i].rawGrades.experiment3;
+  cout << "Experiment 4:\n";
+  cin >> studentList[i].rawGrades.experiment4;
+  
+//Getting the Percentage score for Experiments // The weight percecntage is 5%
+  componentPercentage = ((studentList[i].rawGrades.experiment1) * 0.05) +
+                        ((studentList[i].rawGrades.experiment2) * 0.05) +
+                        ((studentList[i].rawGrades.experiment3) * 0.05) +
+                        ((studentList[i].rawGrades.experiment4) * 0.05);
+  studentList[i].finalGrade.finalPercentageGrade = componentPercentage;
+  cout << "--> Experiments Equivalent Percentage:" << componentPercentage << "\n\n";
+}
+
+void enterAndComputeSkillTestsPercentage(Students *studentList, int i) 
+{
+  float componentPercentage;
+
+//Input of scores in Skills tests
+  cout << "SKILLS TEST\n"; // skills test is equivalent to 20% of the grade
+  cout << "Skill Test 1:\n";
+  cin >> studentList[i].rawGrades.skillsTest1;
+  cout << "Skill Test 2:\n";
+  cin >> studentList[i].rawGrades.skillsTest2;
+  cout << "Skill Test 3:\n";
+  cin >> studentList[i].rawGrades.skillsTest3;
+  cout << "Skill Test 4:\n";
+  cin >> studentList[i].rawGrades.skillsTest4;
+  
+//Getting the Percentage scores for Skills tests
+  componentPercentage = ((studentList[i].rawGrades.skillsTest1) * 0.05) + // It has a weight of 5%
+                        ((studentList[i].rawGrades.skillsTest2) * 0.05) +
+                        ((studentList[i].rawGrades.skillsTest3) * 0.05) +
+                        ((studentList[i].rawGrades.skillsTest4) * 0.05);
+ studentList[i].finalGrade.finalPercentageGrade =
+      studentList[i].finalGrade.finalPercentageGrade + componentPercentage;
+  cout << "--> Skill Tests Equivalent Percentage:" << componentPercentage << "\n\n";
+}
+
+void enterAndComputeMachineProblemsPercentage(Students *studentList, int i) 
+{
+  float componentPercentage;
+  
+//Input of scores in Machine Problems
+  cout << "MACHINE PROBLEMS\n"; // Machine problem has 20% equivalent passing grade
+  cout << "Machine Problem 1:\n";
+  cin >> studentList[i].rawGrades.machineProblem1;
+  cout << "Machine Problem 2:\n";
+  cin >> studentList[i].rawGrades.machineProblem2;
+  
+//Getting the Percentage scores for Machine Problems
+  componentPercentage = ((studentList[i].rawGrades.machineProblem1) * 0.10) +
+                        ((studentList[i].rawGrades.machineProblem2) * 0.10);
+  studentList[i].finalGrade.finalPercentageGrade =
+      studentList[i].finalGrade.finalPercentageGrade + componentPercentage;
+  cout << "--> Machine Problems Equivalent Percentage:" << componentPercentage
+       << "\n\n";
+}
+
+void enterAndComputeMajorExaminationsPercentage(Students *studentList, int i) 
+{
+  float componentPercentage;
+
+//Input of scores in Major Examinations
+  cout << "MAJOR EXAMINATIONS\n"; // Major Examinations has a 40% equivalent percentage
+  cout << "Preliminary\n";
+  cout << "Written Examination:\n";
+  cin >> studentList[i].rawGrades.preliminary.writtenExam;
+  cout << "Practical Examination:\n";
+  cin >> studentList[i].rawGrades.preliminary.practicalExam;
+  cout << "\nFinal\n";
+  cout << "Written Examination:\n";
+cin >> studentList[i].rawGrades.final.writtenExam;
+  cout << "Practical Examination:\n";
+  cin >> studentList[i].rawGrades.final.practicalExam;
+  
+//Getting the Percentage scores for Major Examinations
+  componentPercentage = ((studentList[i].rawGrades.preliminary.writtenExam +
+                          studentList[i].rawGrades.preliminary.practicalExam) *
+                         0.20) +
+                        ((studentList[i].rawGrades.final.writtenExam +
+                          studentList[i].rawGrades.final.practicalExam) *
+                         0.20);
+  studentList[i].finalGrade.finalPercentageGrade =
+      studentList[i].finalGrade.finalPercentageGrade + componentPercentage;
+  cout << "--> Major Examinations Equivalent Percentage:" << componentPercentage
+       << "\n\n";
+}
+
+void determineGPA(Students *studentList, int i) // it is to determine if the student passed or failed
+{ //Considered a passing grade if 
+  if (95.57 <= studentList[i].finalGrade.finalPercentageGrade &&
+      100 >= studentList[i].finalGrade.finalPercentageGrade) 
+	{
+    studentList[i].finalGrade.finalGPA = 1.00; //Final GPA of 1.00 is considered a Passing grade
+    studentList[i].status = "PASSED";
+    } 
+  
+else if (91.12 <= studentList[i].finalGrade.finalPercentageGrade &&
+             95.56 >= studentList[i].finalGrade.finalPercentageGrade) 
+  {
+    studentList[i].finalGrade.finalGPA = 1.25; //Final GPA of 1.25 is considered a Passing grade
+    studentList[i].status = "PASSED";
+  } 
+  
+  else if (86.68 <= studentList[i].finalGrade.finalPercentageGrade &&
+             91.11 >= studentList[i].finalGrade.finalPercentageGrade) 
+  {
+
+    studentList[i].finalGrade.finalGPA = 1.50; //Final GPA of 1.50 is considered a Passing grade
+    studentList[i].status = "PASSED";
+  } 
+  
+  else if (82.23 <= studentList[i].finalGrade.finalPercentageGrade &&
+             86.67 >= studentList[i].finalGrade.finalPercentageGrade) 
+			 
+  {
+    studentList[i].finalGrade.finalGPA = 1.75; //Final GPA of 1.75 is considered a Passing grade
+    studentList[i].status = "PASSED";
+  } 
+  
+  else if (77.79 <= studentList[i].finalGrade.finalPercentageGrade &&
+             82.22 >= studentList[i].finalGrade.finalPercentageGrade) 
+			 
+  {
+    studentList[i].finalGrade.finalGPA = 2.00; //Final GPA of 2.00 is considered a Passing grade
+    studentList[i].status = "PASSED";
+  } 
+  
+  else if (73.34 <= studentList[i].finalGrade.finalPercentageGrade &&
+             77.78 >= studentList[i].finalGrade.finalPercentageGrade) 
+			 
+  {
+    studentList[i].finalGrade.finalGPA = 2.25; //Final GPA of 2.25 is considered a Passing grade
+    studentList[i].status = "PASSED";
+  } 
+  
+
+  else if (68.90 <= studentList[i].finalGrade.finalPercentageGrade &&
+             73.33 >= studentList[i].finalGrade.finalPercentageGrade) 
+			 
+  {
+    studentList[i].finalGrade.finalGPA = 2.50; //Final GPA of 2.50 is considered a Passing grade
+    studentList[i].status = "PASSED";
+  } 
+  
+  else if (64.45 <= studentList[i].finalGrade.finalPercentageGrade &&
+             68.89 >= studentList[i].finalGrade.finalPercentageGrade) 
+			 
+  {
+    studentList[i].finalGrade.finalGPA = 2.75; //Final GPA of 2.75 is considerd a Passing grade
+    studentList[i].status = "PASSED";
+  } 
+  
+  else if (60.00 <= studentList[i].finalGrade.finalPercentageGrade &&
+             64.44 >= studentList[i].finalGrade.finalPercentageGrade) 
+			 
+  {
+    studentList[i].finalGrade.finalGPA = 3.00; //Final GPA of 3.00 is considered a Passing grade
+    studentList[i].status = "PASSED";
+  } 
+  
+  else 
+  {
+    studentList[i].finalGrade.finalGPA = 5.00; //Final GPA reulsting to 5.00 is considered a Failing grade
+    studentList[i].status = "FAILED";
+  }
+//Declaration of Student's Status
+  cout << "Student: " << studentList[i].name << "\n"; // it is to declare if the student pass or fail
+ cout << "Final Raw Grade: " << studentList[i].finalGrade.finalPercentageGrade
+       << "\n";
+  cout << "Grade Point Average: " << studentList[i].finalGrade.finalGPA << "\n";
+  cout << "Status: " << studentList[i].status << "\n";
+}
+
+bool compareFinalRawGrades(Students s1, Students s2) 
+{
+  return (s1.finalGrade.finalPercentageGrade >
+          s2.finalGrade.finalPercentageGrade);
+}
+ 
